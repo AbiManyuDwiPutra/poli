@@ -1,69 +1,45 @@
-<!DOCTYPE html>
-<html>
+<?php
+require '../../config/koneksi.php';
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $no_rm = $_POST['no_rm'];
+    $idJadwal = $_POST['jadwal'];
+    $keluhan = $_POST['keluhan'];
+    $noAntrian = 0;
 
-<head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    $cariPasien = "SELECT * FROM pasien WHERE no_rm = '$no_rm'";
+    $query = mysqli_query($mysqli, $cariPasien);
+    $data = mysqli_fetch_assoc($query);
+    $idPasien = $data['id'];
+    // echo "<script>alert($idPasien);window.location.href='../logout.php';</script>";
 
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../../assets/AdminLTE/plugins/fontawesome-free/css/all.min.css">
-    <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="../../assets/AdminLTE/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../assets/AdminLTE/dist/css/adminlte.min.css">
-</head>
+    $cekData = "SELECT * FROM daftar_poli";
+    $queryCekData = mysqli_query($mysqli, $cekData);
+    if (mysqli_num_rows($queryCekData) > 0) {
+        $cekNoAntrian = "SELECT * FROM daftar_poli WHERE id_jadwal = '$idJadwal' ORDER BY no_antrian DESC LIMIT 1";
+        $queryNoAntrian = mysqli_query($mysqli, $cekNoAntrian);
+        $dataPoli = mysqli_fetch_assoc($queryNoAntrian);
+        $antrianTerakhir = (int) $dataPoli['no_antrian'];
+        $antrianBaru = $antrianTerakhir += 1;
 
-<body class="hold-transition login-page">
-    <div class="login-box card">
-        <h2 class="bg-primary  card-header ">Daftar Poli</h2>
-        <div class="row mt-3">
-            <div class="col-md-10 offset-md-1">
-                <form class="mb-3">
-                    <div class="form-group">
-                        <label for="rekamMedis">Nomor Rekam Medis</label>
-                        <input type="email" class="form-control" id="rekamMedis"
-                            value="name@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="poli">Pilih Poli</label>
-                        <select class="form-control" id="poli">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="jadwal">Pilih Jadwal</label>
-                        <select class="form-control" id="jadwal">
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="keluhan">Keluhan</label>
-                        <textarea class="form-control" id="keluhan" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Daftar</button>
-                </form>
-            </div>
-        </div>
-    </div>
+        $daftarPoli = "INSERT INTO daftar_poli (id_pasien, id_jadwal, keluhan, no_antrian) 
+            VALUES ('$idPasien', '$idJadwal', '$keluhan', '$antrianBaru')";
+        $queryDaftarPoli = mysqli_query($mysqli, $daftarPoli);
+        if ($queryDaftarPoli) {
+            echo '<script>alert("Berhasil mendaftar poli");window.location.href="index.php";</script>';
+        } else {
+            echo '<script>alert("Gagal mendaftar poli");window.location.href="inddex.php";</script>';
+        }
+    } else {
+        $noAntrian = 1;
 
-    <!-- jQuery -->
-    <script src="../../assets/AdminLTE/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../../assets/AdminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="../../assets/AdminLTE/dist/js/adminlte.min.js"></script>
-</body>
-
-</html>
+        $daftarPoli = "INSERT INTO daftar_poli (id_pasien, id_jadwal, keluhan, no_antrian) 
+            VALUES ('$idPasien', '$idJadwal', '$keluhan', '$noAntrian')";
+        $queryDaftarPoli = mysqli_query($mysqli, $daftarPoli);
+        if ($queryDaftarPoli) {
+            echo '<script>alert("Berhasil mendaftar poli");window.location.href="index.php"</script>';
+        } else {
+            echo '<script>alert("Gagal mendaftar poli");window.location.href="index.php";</script>';
+        }
+    }
+}
+?>

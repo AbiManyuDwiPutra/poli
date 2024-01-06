@@ -25,7 +25,7 @@ include_once("../config/koneksi.php");
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <?php if ($_SESSION['akses'] == 'admin') ?>
+        <?php if ($_SESSION['akses'] == 'admin'): ?>
         <li class="nav-item">
           <a href="<?= $base_admin ?>" class="nav-link">
             <i class="nav-icon fas fa-pills"></i>
@@ -71,17 +71,29 @@ include_once("../config/koneksi.php");
             </p>
           </a>
         </li>
-
-        <!-- <li class="nav-item">
-          <a href="<?= $base_pasien ?>" class="nav-link">
+        <!-- Session login dokter -->
+        <?php elseif ($_SESSION['akses'] == 'dokter'): ?>
+        <li class="nav-item">
+          <a href="<?= $base_dokter ?>" class="nav-link">
             <i class="nav-icon fas fa-user-injured"></i>
             <p>
               Dashboard
-              <span class="right badge badge-succes">Pasien</span>
+              <span class="right badge badge-succes">Dokter</span>
             </p>
             </p>
           </a>
-        </li> -->
+        </li>
+        <li class="nav-item">
+          <a href="<?= $base_dokter . '/profil' ?>" class="nav-link">
+            <i class="nav-icon fas fa-user-injured"></i>
+            <p>
+              Profil
+              <span class="right badge badge-succes">Dokter</span>
+            </p>
+            </p>
+          </a>
+        </li>
+        <?php else : ?>
         <!-- <li class="nav-item">
           <a href="" class="nav-link">
             <i class="nav-icon fas fa-user-injured"></i>
@@ -92,6 +104,7 @@ include_once("../config/koneksi.php");
             </p>
           </a>
         </li> -->
+        <?php endif ?>
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

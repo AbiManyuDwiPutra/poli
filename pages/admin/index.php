@@ -2,26 +2,8 @@
 include_once("../../config/koneksi.php");
 session_start();
 
-// if (isset($_SESSION['login'])) {
-//   $_SESSION['login'] = true;
-// } else {
-//   echo "<meta http-equiv='refresh' content='0; url=../auth/loginDokter.php'>";
-//   die();
-// }
-
-// $nama = $_SESSION['username'];
-// $akses = $_SESSION['akses'];
-
-// if ($akses != 'admin') {
-//   echo "<meta http-equiv='refresh' content='0; url=../..'>";
-//   die();
-// }
 ?>
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="en">
 
 <head>
@@ -45,12 +27,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <?= include("../../components/navbar.php"); ?>
 
     <!-- TAMPILKAN SIDEBAR -->
-    <?= include("../../components/sidebar.php"); ?>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
       <!-- Main content -->
-      <?php include("obat/index.php"); ?>
+      <?php include("poli/index.php"); ?>
       <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->

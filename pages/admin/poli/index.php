@@ -1,6 +1,6 @@
 <?php
 include_once("../../config/koneksi.php");
-session_start();
+// session_start();
 
 if (isset($_SESSION['login'])) {
     $_SESSION['login'] = true;
@@ -36,12 +36,12 @@ if ($akses != 'admin') {
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Manajemen Obat</h1>
+                    <h1 class="m-0">Manajemen Poli</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="..">Home</a></li>
-                        <li class="breadcrumb-item active">Obat</li>
+                        <li class="breadcrumb-item active">Poli</li>
                     </ol>
                 </div>
             </div>
@@ -60,7 +60,7 @@ if ($akses != 'admin') {
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Data Obat</h3>
+                            <h3 class="card-title">Data Poli</h3>
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-sm btn-success float-right" data-toggle="modal"
@@ -76,29 +76,25 @@ if ($akses != 'admin') {
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addModalLabel">Tambah Data Obat</h5>
+                                        <h5 class="modal-title" id="addModalLabel">Tambah Poli</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Form tambah data obat disini -->
-                                        <form action="../../pages/admin/obat/tambahObat.php" method="post">
+                                        <form action="../../pages/admin/poli/tambahPoli.php" method="post">
                                             <div class="form-group">
-                                                <label for="nama_obat">Nama Obat</label>
-                                                <input type="text" class="form-control" id="nama_obat" name="nama_obat"
+                                                <label for="nama_poli">Nama Poli</label>
+                                                <input type="text" class="form-control" id="nama_poli" name="nama_poli"
                                                     required>
                                             </div>
                                             <div class="form-group">
-                                                <label for="kemasan">Kemasan</label>
-                                                <input type="text" class="form-control" id="kemasan" name="kemasan"
+                                                <label for="keterangan">Keterangan</label>
+                                                <input type="text" class="form-control" id="keterangan" name="keterangan"
                                                     required>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="harga">Harga</label>
-                                                <input type="text" class="form-control" id="harga" name="harga"
-                                                    required>
-                                            </div>
+                    
                                             <button type="submit" class="btn btn-primary">Tambah</button>
                                         </form>
                                     </div>
@@ -112,8 +108,7 @@ if ($akses != 'admin') {
                                     <tr>
                                         <th>ID</th>
                                         <th>Nama Obat</th>
-                                        <th>Kemasan</th>
-                                        <th>Harga</th>
+                                        <th>Keterangan</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -121,18 +116,17 @@ if ($akses != 'admin') {
 
                                     <?php
                                     include '../../config/koneksi.php';
-                                    $query = "SELECT * FROM obat";
+                                    $query = "SELECT * FROM poli";
                                     $result = mysqli_query($mysqli, $query);
 
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         echo "<tr>
                                     <td>{$row['id']}</td>
-                                    <td>{$row['nama_obat']}</td>
-                                    <td>{$row['kemasan']}</td>
-                                    <td>Rp.{$row['harga']}</td>
+                                    <td>{$row['nama_poli']}</td>
+                                    <td>{$row['keterangan']}</td>
                                     <td>
-                                        <button type='button' class='btn btn-sm btn-warning edit-btn' data-obatid='{$row['id']}'>Edit</button>
-                                        <a href='../../pages/admin/obat/hapusObat.php?id={$row['id']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Anda yakin ingin hapus?\");'>Hapus</a>
+                                        <button type='button' class='btn btn-sm btn-warning edit-btn' data-poliid='{$row['id']}'>Edit</button>
+                                        <a href='../../pages/admin/poli/hapusPoli.php?id={$row['id']}' class='btn btn-sm btn-danger' onclick='return confirm(\"Anda yakin ingin hapus?\");'>Hapus</a>
                                     </td>
                                 </tr>";
                                     }
@@ -143,8 +137,8 @@ if ($akses != 'admin') {
                                         <script>
                                             $(document).ready(function () {
                                                 $('.edit-btn').on('click', function () {
-                                                    var dataId = $(this).data('obatid'); // obatid didapat dari id yang dikirimkan melalui tombol edit
-                                                    $('#seg-modal').load('../../pages/admin/obat/editObat.php?id=' + dataId, function () {
+                                                    var dataId = $(this).data('poliid'); // obatid didapat dari id yang dikirimkan melalui tombol edit
+                                                    $('#seg-modal').load('../../pages/admin/poli/editPoli.php?id=' + dataId, function () {
                                                         $('#editModal').modal('show');
                                                     });
                                                 });

@@ -1,3 +1,72 @@
+<?php
+session_start();
+include_once('../../config/koneksi.php');
+
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+  $nama = $_POST["nama"];
+  $alamat = $_POST["alamat"];
+  $no_ktp = $_POST["no_ktp"];
+  $no_hp = $_POST["no_hp"];
+
+  $query_check_pasien = "SELECT id, nama, no_rm FROM pasien WHERE no_ktp = '$no_ktp'";
+  $result_check_pasien = mysqli_query($mysqli, $query_check_pasien);
+
+  if (mysqli_num_rows($result_check_pasien) > 0) {
+    $row = mysqli_fetch_assoc($result_check_pasien);
+
+    if ($row['nama'] != $nama) {
+      echo '<script>alert("Nama Pasien Tidak Sesuai dengan No KTP yang terdaftar.");</script>';
+      echo '<meta http-equiv="refresh" content="0; url=register.php">';
+      die();
+    }
+    $_SESSION['signup'] = true;
+    $_SESSION['id'] = $row['id'];
+    $_SESSION['username'] = $nama;
+    $_SESSION['no_rm'] = $row['no_rm'];
+    $_SESSION['akses'] = 'pasien';
+
+    echo '<meta http-equiv="refresh" content="0; url=../pasien">';
+    die();
+  }
+
+  $queryGetRm = "SELECT MAX(SUBSTRING(no_rm, 8)) as last_queue_number FROM pasien";
+  $resultRm = mysqli_query($mysqli, $queryGetRm);
+
+  if (!$resultRm) {
+    die("Query gagal : " . mysqli_error($mysqli));
+  }
+
+  $rowRm = mysqli_fetch_assoc($resultRm);
+  $lastQueueNumber = $rowRm['last_queue_number'];
+
+  $lastQueueNumber = $lastQueueNumber ? $lastQueueNumber : 0;
+
+  $tahun_bulan = date('Ym');
+
+  $newQueueNumber = $lastQueueNumber + 1;
+
+  $no_rm = $tahun_bulan . "-" . str_pad($newQueueNumber, 3, '0', STR_PAD_LEFT);
+
+  $query = "INSERT INTO pasien (nama, alamat, no_ktp, no_hp, no_rm) VALUES ('$nama','$alamat','$no_ktp','$no_hp','$no_rm')";
+
+  if (mysqli_query($mysqli, $query)) {
+    $_SESSION['signup'] = true;
+    $_SESSION['id'] = mysqli_insert_id($mysqli);
+    $_SESSION['username'] = $nama;
+    $_SESSION['no_rm'] = $no_rm;
+    $_SESSION['akses'] = 'pasien';
+
+    echo '<meta http-equiv="refresh" content="0; url=../pasien">';
+    die();
+  } else {
+    echo "Error: " . $query . "<br>" . mysqli_error($mysqli);
+  }
+
+  mysqli_close($mysqli);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,9 +93,9 @@
         <a href="../../index2.html" class="h1"><b>Poli</b>linik</a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg">Register a new membership</p>
+        <p class="login-box-msg">Register a new account</p>
 
-        <form action="pages/pasien/models/register.php" method="post">
+        <form action="" method="post">
           <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Full name" name="nama">
             <div class="input-group-append">

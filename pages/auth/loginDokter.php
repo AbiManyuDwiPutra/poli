@@ -1,6 +1,10 @@
 <?php
-include_once('../../config/koneksi.php')
-    ?>
+session_start();
+include_once('../../config/koneksi.php');
+if (isset($_SESSION['login'])) {
+    echo '<meta http-equiv="refresh" content="0; url=../../">';
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -93,37 +97,40 @@ include_once('../../config/koneksi.php')
 if (isset($_POST['submit'])) {
     $username = stripcslashes($_POST['nama']);
     $password = $_POST['alamat'];
+
     if ($username == 'admin') {
         if ($password == 'admin') {
             $_SESSION['login'] = true;
             $_SESSION['id'] = null;
             $_SESSION['username'] = 'admin';
             $_SESSION['akses'] = 'admin';
-            echo '<meta http-equif="refresh" content="0; url=../admin/index.php">';
+            echo '<meta http-equiv="refresh" content="0; url=../admin/index.php">';
             die();
         }
     } else {
-        $cek_username = $pdo->prepare("SELECT * FROM dokter WHERE nama = '$username'");
+        $cek_username = mysqli_query($mysqli, "SELECT * FROM dokter WHERE nama = '$username';");
         try {
-            //   $cek_username->bind_param("s", $username);
-            $cek_username->execute(array($username));
-            if ($cek_username->rowCount() == 1) {
-                $row = $cek_username->fetch();
-                if ($password == $row['alamat']) {
-                    $_SESSION['login'] = true;
-                    $_SESSION['id'] = $row['id'];
-                    $_SESSION['username'] = $row['nama'];
-                    $_SESSION['akses'] = 'dokter';
-                    echo '<meta http-equif="refresh" content="0; url=../dokter/index.php">';
-                    die();
+            if ($cek_username->num_rows == 1) {
+                foreach ($cek_username as $row) {
+                    if ($password == $row['alamat']) {
+                        $_SESSION['login'] = true;
+                        $_SESSION['id'] = $row['id'];
+                        $_SESSION['username'] = $row['nama'];
+                        $_SESSION['akses'] = 'dokter';
+                        echo "<meta http-equiv='refresh' content='0; url=../dokter'>";
+                        die();
+                    }
+
                 }
             }
-        } catch (PDOException $e) {
+
+        } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
             echo '<meta http-equif="refresh" content="0; ">';
             die();
         }
     }
+
     $_SESSION["error"] = 'Username dan Password tidak cocok';
     echo "<meta http-equiv='refresh' content='0;'>";
     die();
